@@ -21,7 +21,7 @@ all: $(TARGET)
 $(TARGET): $(MAIN_SOURCES)
 	@$(GCC) $(MAIN_SOURCES) $(CFLAGS) $(LIBS) -o $@
 
-	#@scp  Daemon root@10.0.0.42:/bin
+	@scp  CGI root@10.0.0.42:/bin
 
 clean:
 	@rm -rf $(PRODUCT)
