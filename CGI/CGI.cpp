@@ -10,8 +10,6 @@
 #include <sys/fcntl.h>
 #include <string.h>
 
-#define nameSize 80
-
 
 struct InputStruct
 {
@@ -19,28 +17,6 @@ struct InputStruct
 };
 
 
-//#define SHM_SIZE sizeof(struct InputStruct)
-
-/*void handleInput(int choice)
-{
-  char queue_name[nameSize] = "MessageQueue";
-
-  int returnvalue = -1;
-
-  mqd_t mq_fd = -1;
-  mq_fd = mq_open(queue_name,O_WRONLY);
-
-  if (mq_fd != -1)
-  {
-    returnvalue = mq_send(mq_fd, (char*) &choice, sizeof(int), 0);
-    if (returnvalue == -1)
-     {
-      printf("Error sending message to queue.");
-    }
-    mq_unlink(queue_name);
-  }
-}
-*/
 int main()
 {
   struct InputStruct* input;

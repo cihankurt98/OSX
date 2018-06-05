@@ -47,7 +47,7 @@ unsigned char led_four[] = { 0x01, 0x03, LED4_ON};
 
 struct InputStruct
 {
-	unsigned char inputarray[20];
+	unsigned char inputArray[20];
 };
 
 
@@ -90,7 +90,7 @@ bool startComms()
 
 void write()
 {
-	memcpy(&inputStruct->inputarray, &input, sizeof(struct InputStruct));
+	memcpy(&input->inputarray, &input, sizeof(struct InputStruct));
 }
 
 int main()
@@ -112,13 +112,13 @@ int main()
 		return 0;
 	}
 
-	if ((input = (struct InputArray*) mmap(0, SHM_SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0)) == MAP_FAILED)
+	if ((input = (struct InputArray*) mmap(0, sizeof(struct InputStruct), PROT_WRITE, MAP_SHARED, shm_fd, 0)) == MAP_FAILED)
 	{
 		perror("Can not map");
 		return -1;
 	}
 
-	if (mlock(input, SHM_SIZE) != 0)
+	if (mlock(input, sizeof(struct InputStruct)) != 0)
 	{
 		perror("cannot mlock");
 		return -1;
@@ -190,87 +190,83 @@ int main()
 			write();
 		}
 
-		if (input[2] & BUTTON_B_OFFSET && input[0] == 0)
+		if (inputArray.input[2] & BUTTON_B_OFFSET && inputArray.input[0] == 0)
 		{
 			write();
 		}
 
-		if (input[2] & BUTTON_A_OFFSET && input[0] == 0)
+		if (inputArray.input[2] & BUTTON_A_OFFSET && inputArray.input[0] == 0)
 		{
 			write();
 		}
 
-		if (input[3] & BUTTON_XBOX_OFFSET && input[0] == 0)
+		if (inputArray.input[3] & BUTTON_XBOX_OFFSET && inputArray.input[0] == 0)
 		{
 			write();
 		}
-		if (input[5] > 0 && input[0] == 0)
+		if (inputArray.input[5] > 0 && inputArray.input[0] == 0)
 		{
 			//std::cout << "Trigger R2: " << "Triggered" << std::endl;
 			write();
 		}
-		else
-		{
-			//std::cout << "Trigger R2: " << "Not triggered" << std::endl;
-		}
 
-		if (input[3] & BUTTON_TRIGGER_R1_OFFSET && input[0] == 0 )
+		if (inputArray.input[3] & BUTTON_TRIGGER_R1_OFFSET && inputArray.input[0] == 0 )
 		{
 			//std::cout << "Trigger R1: " << "Triggered" << std::endl;
 			write();
 		}
 
-		if (input[4] > 0 && input[0] == 0)
+		if (inputArray.input[4] > 0 && inputArray.input[0] == 0)
 		{
 			//std::cout << "Trigger L2: " << "Triggered" << std::endl;
 			write();
 		}
 
-		if (input[3] & BUTTON_TRIGGER_L1_OFFSET && input[0] == 0)
+		if (inputArray.input[3] & BUTTON_TRIGGER_L1_OFFSET && inputArray.input[0] == 0)
 		{
 			//std::cout << "Trigger L1: " << "Triggered" << std::endl;
 			write();
 		}
 
-		if (input[2] & BUTTON_LEFT_JOYSTICK_OFFSET && input[0] == 0)
+		if (inputArray.input[2] & BUTTON_LEFT_JOYSTICK_OFFSET && inputArray.input[0] == 0)
 		{
 			write();
 			std::cout << "Left joystick: " << "Pressed" << std::endl;
 		}
 
-		if (input[2] & BUTTON_RIGHT_JOYSTICK_OFFSET && input[0] == 0)
+		if (inputArray.input[2] & BUTTON_RIGHT_JOYSTICK_OFFSET && inputArray.input[0] == 0)
 		{
 			write();
 			std::cout << "Right joystick: " << "Pressed" << std::endl;
 		}
 
-		std::cout << "Left joystick X axis: " << (int) (input[6]) << std::endl;
-		std::cout << "Left joystick Y axis: " << (int) (input[8]) << std::endl;
-		std::cout << "Right joystick X axis: " << (int) (input[10]) << std::endl;
-		std::cout << "Right joystick Y axis: " << (int) (input[12]) << std::endl;
+		std::cout << "Left joystick X axis: " << (int) (inputArray.input[6]) << std::endl;
+		std::cout << "Left joystick Y axis: " << (int) (inputArray.input[8]) << std::endl;
+		std::cout << "Right joystick X axis: " << (int) (inputArray.input[10]) << std::endl;
+		std::cout << "Right joystick Y axis: " << (int) (inputArray.input[12]) << std::endl;
 
-		if (input[2] & BUTTON_DPAD_UP_OFFSET && input[0] == 0)
+		if (inputArray.input[2] & BUTTON_DPAD_UP_OFFSET && inputArray.input[0] == 0)
 		{
 			write();
 			//libusb_interrupt_transfer(h, ENDPOINTOUT, led_rotating, sizeof(led_rotating), &transferred, NOTIMEOUT);
 			//std::cout << "D-Pad Up: " << "Pressed" << std::endl;
 		}
 
-		if (input[2] & BUTTON_DPAD_DOWN_OFFSET && input[0] == 0)
+		if (inputArray.input[2] & BUTTON_DPAD_DOWN_OFFSET && inputArray.input[0] == 0)
 		{
 			write();
 			//libusb_interrupt_transfer(h, ENDPOINTOUT, led_blinking, sizeof(led_blinking), &transferred, NOTIMEOUT);
 			//std::cout << "D-Pad Down: " << "Pressed" << std::endl;
 		}
 
-		if (input[2] & BUTTON_DPAD_LEFT_OFFSET && input[0] == 0)
+		if (inputArray.input[2] & BUTTON_DPAD_LEFT_OFFSET && inputArray.input[0] == 0)
 		{
 			write();
 			//libusb_interrupt_transfer(h, ENDPOINTOUT, led_alternating, sizeof(led_alternating), &transferred, NOTIMEOUT);
 			//std::cout << "D-Pad Left: " << "Pressed" << std::endl;
 		}
 
-		if (input[2] & BUTTON_DPAD_RIGHT_OFFSET && input[0] == 0)
+		if (inputArray.input[2] & BUTTON_DPAD_RIGHT_OFFSET && inputArray.input[0] == 0)
 		{
 			write();
 			//libusb_interrupt_transfer(h, ENDPOINTOUT, led_slowblinking, sizeof(led_slowblinking), &transferred, NOTIMEOUT);
