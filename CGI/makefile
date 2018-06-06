@@ -22,6 +22,7 @@ $(TARGET): $(MAIN_SOURCES)
 	@$(GCC) $(MAIN_SOURCES) $(CFLAGS) $(LIBS) -o $@.cgi
 
 	@scp  $(PRODUCT).cgi root@10.0.0.42:/var/www/cgi-bin
+	@scp button.html root@10.0.0.42:/var/www
 
 clean:
 	@rm -rf $(PRODUCT)

@@ -8,6 +8,7 @@
 #include <sys/mman.h>
 #include <sys/fcntl.h>
 #include <string.h>
+#include <mqueue.h>
 
 
 struct InputStruct
@@ -29,19 +30,34 @@ struct InputStruct
 #define BUTTON_DPAD_LEFT_OFFSET 0X04
 #define BUTTON_DPAD_RIGHT_OFFSET 0X08
 
+#define MAX_SIZE 1024
 
 int main()
 {
+	char buffer[MAX_SIZE + 1];
+	mqd_t mq = mq_open("queue", O_CREAT | O_WRONLY);
 	char *data;
+	long m = 0;
 	printf("%s%c%c\n",
 	       "Content-Type:text/html;charset=iso-8859-1", 13, 10);
 	printf("<TITLE>CGI</TITLE>\n");
 	printf("<H3>CGI</H3>\n");
 	printf("<H4>Klik op een button om de waardes te zien.</H4>\n");
-	printf("<meta http-equiv= \"refresh\" content=\"1\">");
+	printf("<meta http-equiv= \"refresh\" content=\"0.5\">");
 	data = getenv("QUERY_STRING");
 	if (data == NULL)
-		printf("<P>No message found </P>");
+	{
+		std::cout << "<P>No message found </P>";
+	}
+	else if (sscanf(data, "m=%ld", &m) != 1)
+	{
+		std::cout << "<P> Error! Invalid data. Data must be numeric</P>";
+	}
+	buffer[0] = m;
+	if (mq_send(mq, buffer, MAX_SIZE, 0) < 0)
+	{
+		perror("sending failed mq");
+	}
 
 	struct InputStruct* input;
 	int shm_fd = 0;
@@ -159,6 +175,6 @@ int main()
 		//libusb_interrupt_transfer(h, ENDPOINTOUT, led_slowblinking, sizeof(led_slowblinking), &transferred, NOTIMEOUT);
 		std::cout << "D-Pad Right: " << "Pressed<br>";
 	}
-
 	sem_wait(sem);
+
 }
