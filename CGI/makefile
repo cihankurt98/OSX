@@ -1,4 +1,4 @@
-PRODUCT= CGI
+PRODUCT= web
 
 CFLAGS=-Wall -Werror -Wextra -O2 -lrt -lpthread
 
@@ -12,16 +12,16 @@ LIBS = /home/student/buildroot/output/target/usr/lib/libusb-1.0.so
 
 GCC=arm-linux-g++
 
-TARGET = CGI
+TARGET = web
 
 .PHONY: all clean
 
 all: $(TARGET)
 
 $(TARGET): $(MAIN_SOURCES)
-	@$(GCC) $(MAIN_SOURCES) $(CFLAGS) $(LIBS) -o $@
+	@$(GCC) $(MAIN_SOURCES) $(CFLAGS) $(LIBS) -o $@.cgi
 
-	@scp  CGI root@10.0.0.42:/bin
+	@scp  $(PRODUCT).cgi root@10.0.0.42:/var/www/cgi-bin
 
 clean:
 	@rm -rf $(PRODUCT)

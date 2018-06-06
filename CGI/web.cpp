@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <semaphore.h>
 #include <errno.h>
-#include <libusb-1.0/libusb.h>
 #include <iostream>
 #include <stdint.h>
 #include <sys/mman.h>
@@ -17,9 +16,17 @@ struct InputStruct
 };
 
 
+
 int main()
 {
-	std::cout << "Test begin Main" << std::endl;
+	char *data;
+	printf("%s%c%c\n",
+	       "Content-Type:text/html;charset=iso-8859-1", 13, 10);
+	printf("<TITLE>CGI</TITLE>\n");
+	printf("<H3>CGI</H3>\n");
+	data = getenv("QUERY_STRING");
+	if (data == NULL)
+		printf("<P>No message found </P>");
 
 	struct InputStruct* input;
 	int shm_fd = 0;
@@ -54,15 +61,14 @@ int main()
 		std::cout << "Daemon to Server Failed" << std::endl;
 	}
 	int reading = 1;
-	std::cout << "hoi" << std::endl;
 	while (reading)
 	{
-		sem_wait(sem);
+		sem_post(sem);
 		for (unsigned int i = 0; i < sizeof(input->inputarray); i++)
 		{
 			std::cout << (int)input->inputarray[i] << "--";
 		}
 		std::cout << std::endl;
-		sem_post(sem);
+		sem_wait(sem);
 	}
 }

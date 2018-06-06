@@ -126,10 +126,10 @@ int main()
 			return -1;
 		}
 		
-		sem_post(sem);
+		sem_wait(sem);
 		memcpy(&input->inputArray, &inputtemp, sizeof(input->inputArray));
 		std::cout << std::endl;
-		sem_wait(sem);
+		sem_post(sem);
 	}
 	endComms();
 }
