@@ -15,6 +15,19 @@ struct InputStruct
 	unsigned char inputarray[20];
 };
 
+#define BUTTON_A_OFFSET 0x10
+#define BUTTON_B_OFFSET 0x20
+#define BUTTON_X_OFFSET 0x40
+#define BUTTON_Y_OFFSET 0x80
+#define BUTTON_XBOX_OFFSET 0x04
+#define BUTTON_TRIGGER_R1_OFFSET 0x02
+#define BUTTON_TRIGGER_L1_OFFSET 0x01
+#define BUTTON_LEFT_JOYSTICK_OFFSET 0x40
+#define BUTTON_RIGHT_JOYSTICK_OFFSET 0x80
+#define BUTTON_DPAD_UP_OFFSET 0X01
+#define BUTTON_DPAD_DOWN_OFFSET 0X02
+#define BUTTON_DPAD_LEFT_OFFSET 0X04
+#define BUTTON_DPAD_RIGHT_OFFSET 0X08
 
 
 int main()
@@ -59,14 +72,152 @@ int main()
 	sem_t* sem = sem_open("DaemonToServer", O_CREAT, 0666, 0);
 	if (sem == SEM_FAILED)
 	{
-		std::cout << "Daemon to Server Failed" << std::endl;
+		std::cout << "Daemon to Server Failed";
 	}
 
 	sem_post(sem);
-	for (unsigned int i = 0; i < sizeof(input->inputarray); i++)
+	if (input->inputarray[3] & BUTTON_A_OFFSET && input->inputarray[0] == 0)
 	{
-		std::cout << (int)input->inputarray[i] << "--";
+		//libusb_interrupt_transfer(h, ENDPOINTOUT, led_one, sizeof(led_one), &transferred2, NOTIMEOUT);
+		std::cout << "Button A: " << "Pressed<br>";
 	}
-	std::cout << std::endl;
+	else
+	{
+		std::cout << "Button A: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[3] & BUTTON_B_OFFSET && input->inputarray[0] == 0)
+	{
+		//libusb_interrupt_transfer(h, ENDPOINTOUT, led_two, sizeof(led_two), &transferred2, NOTIMEOUT);
+		std::cout << "Button B: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "Button B: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[3] & BUTTON_X_OFFSET && input->inputarray[0] == 0)
+	{
+		//libusb_interrupt_transfer(h, ENDPOINTOUT, led_three, sizeof(led_three), &transferred2, NOTIMEOUT);
+		std::cout << "Button X: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "Button X: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[3] & BUTTON_Y_OFFSET && input->inputarray[0] == 0)
+	{
+		//libusb_interrupt_transfer(h, ENDPOINTOUT, led_four, sizeof(led_four), &transferred2, NOTIMEOUT);
+		std::cout << "Button Y: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "Button Y: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[2] & BUTTON_B_OFFSET && input->inputarray[0] == 0)
+	{
+		std::cout << "Button Back: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "Button Back: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[2] & BUTTON_A_OFFSET && input->inputarray[0] == 0)
+	{
+		std::cout << "Button Start: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "Button Start: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[3] & BUTTON_XBOX_OFFSET && input->inputarray[0] == 0)
+	{
+		std::cout << "Button Xbox: " << "Triggered<br>";
+	}
+	else
+	{
+		std::cout << "Button Xbox: " << "Not triggered<br>";
+	}
+
+	if (input->inputarray[3] & BUTTON_TRIGGER_R1_OFFSET && input->inputarray[0] == 0 )
+	{
+		std::cout << "Trigger R1: " << "Triggered<br>";
+	}
+	else
+	{
+		std::cout << "Trigger R1: " << "Not triggered<br>";
+	}
+
+	if (input->inputarray[3] & BUTTON_TRIGGER_L1_OFFSET && input->inputarray[0] == 0)
+	{
+		std::cout << "Trigger L1: " << "Triggered<br>";
+	}
+	else
+	{
+		std::cout << "Trigger L1: " << "Not triggered<br>";
+	}
+
+	if (input->inputarray[2] & BUTTON_LEFT_JOYSTICK_OFFSET && input->inputarray[0] == 0)
+	{
+		std::cout << "Left joystick: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "Left joystick: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[2] & BUTTON_RIGHT_JOYSTICK_OFFSET && input->inputarray[0] == 0)
+	{
+		std::cout << "Right joystick: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "Right joystick: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[2] & BUTTON_DPAD_UP_OFFSET && input->inputarray[0] == 0)
+	{
+		//libusb_interrupt_transfer(h, ENDPOINTOUT, led_rotating, sizeof(led_rotating), &transferred, NOTIMEOUT);
+		std::cout << "D-Pad Up: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "D-Pad Up: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[2] & BUTTON_DPAD_DOWN_OFFSET && input->inputarray[0] == 0)
+	{
+		//libusb_interrupt_transfer(h, ENDPOINTOUT, led_blinking, sizeof(led_blinking), &transferred, NOTIMEOUT);
+		std::cout << "D-Pad Down: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "D-Pad Down: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[2] & BUTTON_DPAD_LEFT_OFFSET && input->inputarray[0] == 0)
+	{
+		//libusb_interrupt_transfer(h, ENDPOINTOUT, led_alternating, sizeof(led_alternating), &transferred, NOTIMEOUT);
+		std::cout << "D-Pad Left: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "D-Pad Left: " << "Not Pressed<br>";
+	}
+
+	if (input->inputarray[2] & BUTTON_DPAD_RIGHT_OFFSET && input->inputarray[0] == 0)
+	{
+		//libusb_interrupt_transfer(h, ENDPOINTOUT, led_slowblinking, sizeof(led_slowblinking), &transferred, NOTIMEOUT);
+		std::cout << "D-Pad Right: " << "Pressed<br>";
+	}
+	else
+	{
+		std::cout << "D-Pad Right: " << "Not Pressed<br>";
+	}
+
 	sem_wait(sem);
 }
