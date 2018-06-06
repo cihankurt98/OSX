@@ -30,12 +30,12 @@ struct InputStruct
 #define BUTTON_DPAD_LEFT_OFFSET 0X04
 #define BUTTON_DPAD_RIGHT_OFFSET 0X08
 
-#define MAX_SIZE 1024
+#define MAX_SIZE 1
 
 int main()
 {
-	char buffer[MAX_SIZE + 1];
-	mqd_t mq = mq_open("queue", O_CREAT | O_WRONLY);
+	char buffer[1];
+	mqd_t mq = mq_open("queue", O_WRONLY);
 	char *data;
 	long m = 0;
 	printf("%s%c%c\n",
@@ -47,15 +47,16 @@ int main()
 	data = getenv("QUERY_STRING");
 	if (data == NULL)
 	{
-		std::cout << "<P>No message found </P>";
+		std::cout << "No message found <br>";
 	}
 	else if (sscanf(data, "m=%ld", &m) != 1)
 	{
-		std::cout << "<P> Error! Invalid data. Data must be numeric</P>";
+		std::cout << "Error! Invalid data. Data must be numeric<br>";
 	}
 	buffer[0] = m;
-	if (mq_send(mq, buffer, MAX_SIZE, 0) < 0)
+	if (mq_send(mq, buffer, sizeof(buffer), 0) < 0)
 	{
+		std::cout << (int)buffer[0] << "<br>";
 		perror("sending failed mq");
 	}
 

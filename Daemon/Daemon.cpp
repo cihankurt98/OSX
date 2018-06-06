@@ -11,17 +11,24 @@
 #include <string.h>
 #include <mqueue.h>
 
-
+#define LED1_ON 0x06
+#define LED2_ON 0x07
+#define LED3_ON 0x08
+#define LED4_ON 0x09
 
 #define ENDPOINTOUT 0x01
 #define ENDPOINTIN 0x81
 #define BUTTON_A_OFFSET 0x10
 #define NOTIMEOUT 0
 #define FAIL 1
-#define MAX_SIZE 1024
+#define MAX_SIZE 1
 
 unsigned char vibrate[] = {0x00, 0x08, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x00};
 unsigned char vibrate_off[] = {0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+unsigned char led_one[] = { 0x01, 0x03, LED1_ON}; //message type, length, ledvalue
+unsigned char led_two[] = { 0x01, 0x03, LED2_ON};
+unsigned char led_three[] = { 0x01, 0x03, LED3_ON};
+unsigned char led_four[] = { 0x01, 0x03, LED4_ON};
 
 struct InputStruct
 {
@@ -70,12 +77,15 @@ bool startComms()
 int main()
 {
 
-	daemon(0, 0);
+	if (daemon(1, 1) == -1)
+	{
+		perror("no daemon started");
+	}
 
 	int shm_fd = 0;
 
 	struct mq_attr attr;
-	char buffer[MAX_SIZE + 1];
+	char buffer[1];
 
 	// initialize the queue attributes
 	attr.mq_flags = 0;
@@ -85,7 +95,7 @@ int main()
 
 	// create the message queue
 	
-	mqd_t mq = mq_open("queue", O_CREAT | O_RDONLY, 0660, &attr);
+	mqd_t mq = mq_open("queue", O_CREAT | O_RDONLY, 0644, &attr);
 
 	if ((shm_fd = shm_open ("sharedmem", O_CREAT | O_RDWR, 0666)) == -1)
 	{
@@ -146,18 +156,26 @@ int main()
 			return -1;
 		}
 		//std::cout << "voor sem";
-		sem_wait(sem);
+		sem_post(sem);
 		memcpy(&input->inputArray, &inputtemp, sizeof(input->inputArray));
 		std::cout << std::endl;
-		sem_post(sem);
-		bytes_read = mq_receive(mq, buffer, MAX_SIZE, NULL);
+		sem_wait(sem);
+		bytes_read = mq_receive(mq, buffer, sizeof(buffer), NULL);
+		std::cout << bytes_read << std::endl;
 		if (bytes_read < 0)
 		{
-			perror("bytes read kleiner dan 0");
+			perror("error bytes read: ");
+			//std::cout << "bytes read kleiner dan 0" << std::endl;;
 		}
 		else
 		{
-			std::cout << bytes_read;
+			std::cout << "kom lekker niet in je if statement hajje woa" << std::endl;
+			ssize_t trigger = 1;
+			if (bytes_read == trigger)
+			{
+				std::cout << "led aan" << std::endl;
+				libusb_interrupt_transfer(h, ENDPOINTOUT, led_two, sizeof(led_two), &transferred, NOTIMEOUT);
+			}
 		}
 
 		buffer[bytes_read] = 0;
