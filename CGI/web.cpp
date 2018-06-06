@@ -24,6 +24,7 @@ int main()
 	       "Content-Type:text/html;charset=iso-8859-1", 13, 10);
 	printf("<TITLE>CGI</TITLE>\n");
 	printf("<H3>CGI</H3>\n");
+	printf("<meta http-equiv= \"refresh\" content=\"1\">");
 	data = getenv("QUERY_STRING");
 	if (data == NULL)
 		printf("<P>No message found </P>");
@@ -60,15 +61,12 @@ int main()
 	{
 		std::cout << "Daemon to Server Failed" << std::endl;
 	}
-	int reading = 1;
-	while (reading)
+
+	sem_post(sem);
+	for (unsigned int i = 0; i < sizeof(input->inputarray); i++)
 	{
-		sem_post(sem);
-		for (unsigned int i = 0; i < sizeof(input->inputarray); i++)
-		{
-			std::cout << (int)input->inputarray[i] << "--";
-		}
-		std::cout << std::endl;
-		sem_wait(sem);
+		std::cout << (int)input->inputarray[i] << "--";
 	}
+	std::cout << std::endl;
+	sem_wait(sem);
 }
